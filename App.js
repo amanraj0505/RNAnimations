@@ -1,45 +1,39 @@
 import {useState, useEffect, useRef} from 'react';
 import React from 'react';
-import {SafeAreaView, useColorScheme, View, Animated} from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {
+  Animated,
+  SafeAreaView,
+  TouchableOpacity,
+  View,
+  Text,
+} from 'react-native';
 
 const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-  const [translation, setTranslation] = useState();
-  const translation2 = useRef(new Animated.Value(0)).current;
-  useEffect(() => {
-    for (let i = 0; i < 50; i++) {
-      setTimeout(() => {
-        setTranslation(i);
-      }, 25 * i);
-    }
-  }, []);
-  useEffect(() => {
-    Animated.timing(translation2, {
-      toValue: 50,
-      useNativeDriver: true,
+  const value = useState(new Animated.ValueXY({x: 0, y: 0}))[0];
+  const moveball = () => {
+    Animated.timing(value, {
+      toValue: {
+        x: 100,
+        y: 100,
+      },
+      duration: 1000,
+      useNativeDriver: false,
     }).start();
-  }, []);
+  };
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <View
-        style={{
-          height: 100,
-          width: 100,
-          backgroundColor: 'red',
-          transform: [{translateX: translation}],
-        }}></View>
-      <Animated.View
-        style={{
-          height: 100,
-          width: 100,
-          marginTop: 10,
-          backgroundColor: 'red',
-          transform: [{translateX: translation}],
-        }}></Animated.View>
+    <SafeAreaView>
+      <Animated.View style={value.getLayout()}>
+        <View
+          style={{
+            width: 100,
+            height: 100,
+            borderRadius: 100 / 2,
+            backgroundColor: 'red',
+          }}></View>
+      </Animated.View>
+      <TouchableOpacity onPress={moveball}>
+        <Text>Click Me</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
